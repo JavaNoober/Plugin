@@ -1,11 +1,14 @@
 package com.xiaoqi.plugin;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.xiaoqi.replugindemo.MyApplication;
+import com.qihoo360.replugin.RePlugin;
+
+import java.lang.reflect.Field;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +26,15 @@ public class MainActivity extends AppCompatActivity {
 
 	private void initView() {
 		mTv = (TextView) findViewById(R.id.tv);
-		mTv.setText(MyApplication.a + "");
+		Class<Context> contextClass = (Class<Context>) RePlugin.getHostContext().getApplicationContext().getClass();
+		try {
+			Field field = contextClass.getField("a");
+			int a = field.getInt(RePlugin.getHostContext().getApplicationContext());
+			mTv.setText("" + a);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }
